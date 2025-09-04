@@ -22,7 +22,7 @@ queue *createq(void) {
 bool enqueue(queue *q, person p) {
 	// first check if q exists
 	if (q == NULL) {
-		printf("Invalid queue object provided to enqueue function.");
+		printf("Invalid queue object provided to enqueue function.\n");
 		return false;
 	}
 
@@ -46,17 +46,21 @@ bool enqueue(queue *q, person p) {
 }
 
 person dequeue(queue *q) {
+	// returns the person at the head of the queue and then removes it from the queue
 	person p = {"", 0};
 
+	// Error checking for if q is null or empty
 	if (q == NULL) {
-		printf("Invalid queue object provided to dequeue object.");
+		printf("Invalid queue object provided to dequeue object.\n");
 		return p;
 	} else if (q->head == NULL) {
-		printf("Queue object is empty.");
+		printf("Queue object is empty.\n");
 		return p;
 	}
 
+	// get the person object from the head of the queue
 	p = q->head->value;
+	// temp node to hold on to before freeing
 	node *temp = q->head;
 	if (q->head == q->tail) {
 		q->head = NULL;
@@ -65,38 +69,43 @@ person dequeue(queue *q) {
 		q->head = temp->next;
 	}
 
+	// free the node
 	free(temp);
 	return p;
 }
 
 bool isemptyqueue(queue *q) {
+	// check if the queue is empty or null
 	if (q == NULL) {
-		printf("Invalid queue object in isemptyqueue.");
-		return false;
+		printf("Invalid queue object in isemptyqueue.\n");
+		return true;
 	}
 	return (q->head == NULL);
 }
 
 bool emptyq(queue *q) {
+	// empty the queue and return true if successful
 	if (q == NULL) {
-		printf("Invalid queue object in emptyq.");
+		printf("Invalid queue object in emptyq.\n");
 	}
 	if (isemptyqueue(q)) {
 		return false;
 	}
-	node *temp;
-	while (q->head != NULL) {
-		temp = q->head;
-		printf(".\n\n\n\n----- %s -----\n\n\n\n", temp->value.name);
+
+	// remove the element at the head until the queue is empty
+	while (!isemptyqueue(q)) {
+		// dequeue calls free on the node, so no need to do it here
 		dequeue(q);
 	}
 	return true;
 }
 
 bool freeq(queue *q) {
+	// free the memory allocated for the queue object if it is empty
 	if (q == NULL) {
 		return true;
 	}
+	// free if empty
 	if (isemptyqueue(q)) {
 		free(q);
 		return true;
