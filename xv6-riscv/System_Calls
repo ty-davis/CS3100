@@ -1,0 +1,103 @@
+kernel/syscall.h (header file)
+This file defines all of the values associated with the "SYS_" constants, basically just a large enum that is used to assign values to the constants for programmer reference in the other files.
+
+kernel/syscall.c (source file)
+The entry point from the user program to the kernel through the syscall function. The a7 register from the trapframe contains the number that corresponds with the associated syscall (defined in syscall.h). It also calls the syscall function itself which is stored in the syscalls[] table.
+
+sysfile.c (source file)
+The definitions for the syscalls from syscall.c that pertain to the filesystem are contained in this file. This includes the definitions for syscalls such as sys_chdir, sys_exec, sys_pipe etc.
+
+sysproc.c (source file)
+The definitions for the syscalls from syscall.c that pertain to the system processes. Such functions include sys_fork, sys_exec, sys_wait, sys_uptime, etc.
+
+user/user.h (header file)
+The header exposing these syscalls to the user for writing programs that use them.
+
+
+My greps/findings to narrow down the files:
+
+### open 
+```
+➜  xv6-riscv git:(riscv) ✗ grep -nr open * | grep -v = | grep -v printf | grep -v " if" | grep -v "//" | grep -v "close"
+kernel/syscall.h:16:#define SYS_open   15
+kernel/sysfile.c:305:sys_open(void)
+kernel/syscall.c:97:extern uint64 sys_open(void);
+kernel/syscall.c:122:[SYS_open]    sys_open,
+test-xv6.py:48:        with open("test-xv6.out", "w") as f:
+user/usertests.c:490:openiputtest(char *s)
+user/usertests.c:523:opentest(char *s)
+user/usertests.c:2665:    open(p + 8192, 0);
+user/usertests.c:2714:  {openiputtest, "openiput"},
+user/usertests.c:2717:  {opentest, "opentest"},
+user/usys.pl:33:entry("open");
+user/init.c:21:    open("console", O_RDWR);
+user/user.h:15:int open(const char*, int);
+```
+
+### getpid
+```
+➜  xv6-riscv git:(riscv) ✗ grep -nr getpid
+user/grind.c:150:        kill(getpid());
+user/usertests.c:806:        getpid();
+user/usertests.c:911:  int master_pid = getpid();
+user/usys.pl:41:entry("getpid");
+user/user.h:23:int getpid(void);
+kernel/syscall.h:12:#define SYS_getpid 11
+kernel/sysproc.c:20:sys_getpid(void)
+kernel/syscall.c:93:extern uint64 sys_getpid(void);
+kernel/syscall.c:118:[SYS_getpid]  sys_getpid,
+```
+
+### fork
+```
+  xv6-riscv git:(riscv) ✗ grep -nr fork * | grep -v if | grep -v = | grep -v usertests | grep -v Makefile | grep -v forktest | grep -v "//" | grep -v forkret | grep -v kfork
+kernel/syscall.h:2:#define SYS_fork    1
+kernel/sysproc.c:26:sys_fork(void)
+kernel/syscall.c:83:extern uint64 sys_fork(void);
+kernel/syscall.c:108:[SYS_fork]    sys_fork,
+user/grind.c:112:        printf("grind: fork failed\n");
+user/grind.c:119:        fork();
+user/grind.c:120:        fork();
+user/grind.c:123:        printf("grind: fork failed\n");
+user/grind.c:138:        printf("grind: fork failed\n");
+user/grind.c:153:        printf("grind: fork failed\n");
+user/grind.c:165:        fork();
+user/grind.c:166:        fork();
+user/grind.c:174:        printf("grind: fork failed\n");
+user/grind.c:191:        printf("grind: fork failed\n");
+user/grind.c:250:        fprintf(2, "grind: fork failed\n");
+user/grind.c:274:        fprintf(2, "grind: fork failed\n");
+user/grind.c:304:    printf("grind: fork failed\n");
+user/grind.c:315:    printf("grind: fork failed\n");
+user/logstress.c:22:      printf("%s: fork failed\n", argv[0]);
+user/usys.pl:24:entry("fork");
+user/init.c:30:      printf("init: fork failed\n");
+user/user.h:6:int fork(void);
+user/sh.c:188:fork1(void)
+user/sh.c:194:    panic("fork");
+```
+
+
+### chdir
+```
+➜  xv6-riscv git:(riscv) ✗ grep -nr chdir | grep -v "grind.c" | grep -v "usertests"
+user/dorphan.c:22:  if(chdir("dd") != 0){
+user/dorphan.c:23:    printf("%s: chdir dd failed\n", s);
+user/usys.pl:39:entry("chdir");
+user/user.h:21:int chdir(const char*);
+user/sh.c:169:      if(chdir(cmd+3) < 0)
+kernel/syscall.h:10:#define SYS_chdir   9
+kernel/sysfile.c:410:sys_chdir(void)
+kernel/syscall.c:91:extern uint64 sys_chdir(void);
+kernel/syscall.c:116:[SYS_chdir]   sys_chdir,
+```
+
+
+Common files between all of these system calls:
+```
+kernel/syscall.h
+kernel/syscall.c
+kernel/sysfile.c
+kernel/sysproc.c
+user/user.h
+```
