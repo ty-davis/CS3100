@@ -143,6 +143,8 @@ UPROGS=\
 	$U/_forphan\
 	$U/_dorphan\
 	$U/_prog2\
+	$U/_prog4\
+	$U/_HW4\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

@@ -302,6 +302,28 @@ kfork(void)
   return pid;
 }
 
+int
+kincMagic(int value)
+{
+  // cpu stuff
+  push_off();
+  struct cpu *c = mycpu();
+  c->magic += value;
+  int mag = c->magic;
+  pop_off();
+  return mag;
+}
+
+int
+kgetMagic(void)
+{
+  push_off();
+  struct cpu *c = mycpu();
+  int mag = c->magic;
+  pop_off();
+  return mag;
+}
+
 // Pass p's abandoned children to init.
 // Caller must hold wait_lock.
 void
@@ -683,5 +705,12 @@ procdump(void)
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
+  }
+}
+
+void initMagic(void) {
+  struct cpu *c;
+  for (c = cpus; c < &cpus[NCPU]; c++) {
+    c->magic = 0;
   }
 }

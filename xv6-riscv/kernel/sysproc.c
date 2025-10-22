@@ -63,6 +63,40 @@ sys_sbrk(void)
 }
 
 uint64
+sys_incMagic(int value)
+{
+  int n;
+  argint(0, &n);
+  return kincMagic(n);
+}
+
+uint64
+sys_getMagic(void)
+{
+  return kgetMagic();
+}
+
+uint64
+sys_getProcName(void)
+{
+  // print out the process name
+  printf("%s\n", myproc()->name);
+  return 0;
+}
+
+uint64
+sys_modProcName(void)
+{
+  // modify the process name
+  char newName[MAXNAME];
+  if (argstr(0, newName, MAXNAME) < 0) {
+    return -1;
+  }
+  safestrcpy(myproc()->name, newName, MAXNAME);
+  return 0;
+}
+
+uint64
 sys_pause(void)
 {
   int n;

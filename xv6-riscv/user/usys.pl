@@ -42,3 +42,7 @@ entry("getpid");
 entry("sbrk");
 entry("pause");
 entry("uptime");
+entry("incMagic");
+entry("getMagic");
+entry("getProcName");
+entry("modProcName");

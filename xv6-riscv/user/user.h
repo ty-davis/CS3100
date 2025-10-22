@@ -24,6 +24,10 @@ int getpid(void);
 char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
+int incMagic(int);
+int getMagic(void);
+int getProcName(void);
+int modProcName(const char*);
 
 // ulib.c
 int stat(const char*, struct stat*);

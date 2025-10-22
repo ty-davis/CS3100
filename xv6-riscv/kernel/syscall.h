@@ -20,3 +20,7 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_incMagic 22
+#define SYS_getMagic 23
+#define SYS_getProcName 24
+#define SYS_modProcName 25
