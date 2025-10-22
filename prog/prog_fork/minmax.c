@@ -18,7 +18,7 @@ int main(int argc, char * argv[]) {
     /*********************************************************************/
 
     if (argc<3) {  // not enough arguments, need output file name
-	printf("Usage: readfile <filename>\n");
+	printf("Usage: readfile <child_num> <filename>\n");
 	return 1;
     }
 
@@ -27,8 +27,8 @@ int main(int argc, char * argv[]) {
 
     ft= fopen(filename, "rb") ;
     if (ft) {
-	int minVal = 99999999;
-	int maxVal = 0;
+	int minVal = 99999999; // assuming that the smallest number is no larger than this
+	int maxVal = 0; // same but inverse for largest number
 	pid = getpid();
 	fseek (ft,0,SEEK_END); //go to end of file
 	size = ftell(ft);      //what byte in file am I at?
